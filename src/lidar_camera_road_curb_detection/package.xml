@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>lidar_camera_road_curb_detection</name>
+  <version>0.1.0</version>
+  <description>Road curb detection by fusing a LiDAR point cloud with monocular lane cues.</description>
+  <maintainer email="su11031915@163.com">Su Nayu</maintainer>
+  <author>Seongchang Park (original package metadata)</author>
+  <license>GPL-3.0</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>pcl_conversions</depend>
+  <depend>pcl_ros</depend>
+  <depend>cv_bridge</depend>
+  <depend>image_transport</depend>
+  <depend>message_filters</depend>
+  <depend>laser_geometry</depend>
+  <depend>tf</depend>
+  <depend>jsk_recognition_msgs</depend>
+  <build_depend>libarmadillo-dev</build_depend>
+  <build_depend>libopencv-dev</build_depend>
+  <exec_depend>libarmadillo9</exec_depend>
+</package>

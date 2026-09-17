@@ -1,0 +1,17 @@
+<launch>
+  <arg name="cloud_topic" default="/velodyne_points"/>
+  <arg name="camera_topic" default="/zkhy_stereo/left/color"/>
+  <arg name="weight_path" default="$(find lidar_camera_road_curb_detection)/weights/ufldv2_tusimple_res18_320x800.onnx"/>
+  <arg name="use_cuda" default="false"/>
+  <arg name="rviz" default="true"/>
+
+  <rosparam command="load" file="$(find lidar_camera_road_curb_detection)/config/params_yanshan.yaml"/>
+  <param name="cloud_topic" value="$(arg cloud_topic)"/>
+  <param name="camera_topic" value="$(arg camera_topic)"/>
+  <param name="weight_path" value="$(arg weight_path)"/>
+  <param name="use_cuda" value="$(arg use_cuda)"/>
+  <node name="lidar_camera_road_curb_detection" pkg="lidar_camera_road_curb_detection"
+        type="lidar_camera_road_curb_detection" output="screen"/>
+  <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find lidar_camera_road_curb_detection)/config/curb_yanshan.rviz"/>
+</launch>

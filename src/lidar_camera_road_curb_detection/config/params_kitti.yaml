@@ -1,0 +1,127 @@
+# 型号：          Velodyne HDL-64E
+# 扫描频率：       10 Hz
+# 线数：          64 线
+# 角度分辨率：     0.09 度（ 扫描的点数为360°/0.09°=4000 ）
+# 垂直分辨率：     0.41875（ 26.8°/64°=0.41875° ）
+# 距离精度：       2 厘米
+# 数据采集速率：    约 1.3 百万点/秒
+# 水平方向：       360 度
+# 垂直方向：       26.8 度
+# 扫描范围：       120 米
+# 安装高度：       1.73 米
+# 坐标方向：       前方为X，左侧为Y，上方为Z
+
+
+# 2 × PointGray Flea2 灰度相机 (FL2-14S3M-C),1.4 百万像素, 1/2” 索尼ICX267 CCD, 全局快门
+# 2 × PointGray Flea2 彩色相机 (FL2-14S3C-C), 1.4 百万像素, 1/2” 索尼ICX267 CCD, 全局快门
+# 4 × Edmund Optics lenses, 4mm, opening angle ∼ 90◦,vertical opening angle of region of interest (ROI) ∼ 35◦
+# 1 × Velodyne HDL-64E 旋转3D激光扫描仪, 10 Hz,64 线, 0.09 度角分辨率, 2 cm 距离精度,
+# collecting ∼ 1.3 million points/second, field of view: 360◦ horizontal, 26.8◦ vertical, range: 120 m
+
+
+
+save_flag: true
+
+# 雷达的输入话题 kitti-> /kitti/velo/pointcloud     other->  /velodyne_points
+cloud_topic : /kitti/velo/pointcloud
+camera_topic :  /kitti/camera_color_left/image_raw
+
+#=========================== patchworkpp =======================#
+sensor_height: 1.723
+groud_visualize: true  # 地面分割结果点云可视化
+
+mode: "czm"
+verbose: false   # 检查垂直度/标高/平面度的影响
+visualize: false  # 地面似然估计可视化
+
+# Ground Plane Fitting parameters
+num_iter: 5             # 使用PCA进行地平面估计的迭代次数。
+num_lpr: 20             # 要选择作为最低点代表的最大点数。
+num_min_pts: 10         # 每个面片中估计为地平面的最小点数。
+th_seeds: 0.3           # 阈值的最低点代表使用在初始种子的地面点的选择。
+th_dist: 0.125       # 地面厚度的阈值，越小地面点越少
+th_seeds_v: 0.25        # 阈值的最低点代表使用在初始种子中选择垂直结构点。
+th_dist_v: 0.1          # 垂直结构的厚度阈值。
+
+# 范围半径
+max_range: 45.0             # 地面估算区域的最大范围
+min_range: 1.7              # 地面估算区域的最小范围
+
+uprightness_thr: 0.707  # 地面似然估计（GLE）中使用的垂直度阈值。有关GLE的更多信息，请参阅论文。
+
+adaptive_seed_selection_margin: -1.2 # 自适应_seed_selection_maring*sensor_height以下的点被过滤
+czm:
+    num_zones: 4
+    num_sectors_each_zone: [16, 32, 54, 32]
+    mum_rings_each_zone: [2, 4, 4, 4]
+    elevation_thresholds:  [0.0, 0.0, 0.0, 0.0] # GLE中使用的每个环的海拔阈值。这些值自适应地更新。
+    flatness_thresholds:  [0.0, 0.0, 0.0, 0.0]  # GLE中使用的每个环的平坦度阈值。这些值自适应地更新。
+
+enable_RNR : true
+enable_RVPF : true
+enable_TGR : true
+
+RNR_ver_angle_thr : -15.0 # 噪波点垂直角度阈值。激光雷达的下行光线更有可能产生严重的噪声点。
+RNR_intensity_thr : 0.2   # 噪声点强度阈值。反射点的强度相对较小。
+
+
+#======================== 路缘点 ==========================#
+# 使用的数据集是否包含RING
+Is_XYZIRT : false
+without_camera : false
+use_pacthwork : false
+segThres : 0.35
+
+lowerBound : -24.8 # 雷达的最小检测高度
+upperBound :  2 # 雷达的最大检测高度
+nScanRings : 64  # 雷达线数：32线或者64线
+angularRes : 0.16 # 激光雷达水平角分辨率
+
+# # 提取高度特征点
+heightMaxThres : 0.5 # 高度差最大值，单位
+heightMinThres : 0.02 # 高度差最小值
+heightSigmaThre : 0.01 # 高度方差最小值
+heightRegion : 5 # 点云范围(高度)
+
+
+# 提取平滑特征点
+curvatureThres : 0.001 # 曲率阈值
+curvatureRegion : 5 # 点云范围(平滑度)
+
+useAngleHorizon : false # 等边三角形法测试
+testThres : 0.1 # 尽量调大,好像随距离变化而变化
+testRegion : 5
+
+useHorizon : false
+distanceHorizonThres : 2 # 水平面的距离阈值
+useVerticle : false
+distanceVerticalThres : 1 # 垂直面的距离阈值
+
+
+
+rmseThres: 0.1
+meanThres: 1.5
+
+
+gridNum: 100
+gridRes: 0.5
+
+
+# RANSAC
+curveFitThres: 0.15 #0.15
+useCurveRansac: true
+
+#======================== 图像处理 ==========================#
+
+GaussianBlur_heigt : 7
+GaussianBlur_width : 7
+canny_low : 500
+canny_up : 5
+threshold_thresh : 150
+threshold_maxVal : 255
+
+
+
+C_T_L : [613.04092927, -718.5758543,    -2.95002805, -124.07200271,
+        182.7590046,    12.23951247, -718.98855179, -101.60781161,
+        0.99989336,    0.00469739,    0.01382915,   -0.26911954]

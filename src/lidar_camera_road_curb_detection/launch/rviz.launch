@@ -1,0 +1,4 @@
+<launch>
+  <arg name="config" default="$(find lidar_camera_road_curb_detection)/config/curb_kitti.rviz"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg config)"/>
+</launch>

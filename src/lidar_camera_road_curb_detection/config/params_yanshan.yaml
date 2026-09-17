@@ -1,0 +1,106 @@
+save_flag: true
+
+# 雷达的输入话题 kitti-> /kitti/velo/pointcloud     other->  /velodyne_points
+cloud_topic : /velodyne_points
+camera_topic :  /zkhy_stereo/left/color
+test_ : -5 # 测试用的
+
+#=========================== patchworkpp =======================#
+use_pacthwork: false
+sensor_height: 1.723
+groud_visualize: true  # 地面分割结果点云可视化
+
+mode: "czm"
+verbose: false   # 检查垂直度/标高/平面度的影响
+visualize: false  # 地面似然估计可视化
+
+# Ground Plane Fitting parameters
+num_iter: 5             # 使用PCA进行地平面估计的迭代次数。
+num_lpr: 15             # 要选择作为最低点代表的最大点数。
+num_min_pts: 4         # 每个面片中估计为地平面的最小点数。
+th_seeds: 0.3           # 阈值的最低点代表使用在初始种子的地面点的选择。
+th_dist: 5.725          # 地面厚度的阈值，越小地面点越少
+th_seeds_v: 1.45        # 阈值的最低点代表使用在初始种子中选择垂直结构点。
+th_dist_v: 0.1          # 垂直结构的厚度阈值。
+
+# 范围半径
+max_range: 40.0             # 地面估算区域的最大范围
+min_range: 0              # 地面估算区域的最小范围
+
+uprightness_thr: 0.9507  # 地面似然估计（GLE）中使用的垂直度阈值。有关GLE的更多信息，请参阅论文。
+
+adaptive_seed_selection_margin: -2.2 # 自适应_seed_selection_maring*sensor_height以下的点被过滤
+czm:
+    num_zones: 4
+    num_sectors_each_zone: [16, 32, 54, 32]
+    mum_rings_each_zone: [2, 4, 4, 4]
+    elevation_thresholds:  [0.0, 0.0, 0.0, 0.0] # GLE中使用的每个环的海拔阈值。这些值自适应地更新。
+    flatness_thresholds:  [0.0, 0.0, 0.0, 0.0]  # GLE中使用的每个环的平坦度阈值。这些值自适应地更新。
+
+enable_RNR : true
+enable_RVPF : true
+enable_TGR : true
+
+RNR_ver_angle_thr : -20.0 # 噪波点垂直角度阈值。激光雷达的下行光线更有可能产生严重的噪声点。
+RNR_intensity_thr : 0.1   # 噪声点强度阈值。反射点的强度相对较小。
+
+
+#======================== 路缘点 ==========================#
+# 使用的数据集是否包含RING
+Is_XYZIRT : true
+without_camera : false
+segThres : 0.35 # ransac分割阈值，低于该阈值的点为地面点，高于该阈值的点为非地面点
+
+lowerBound : -24.8 # 雷达的最小检测高度(实际上没有使用)
+upperBound :  2 # 雷达的最大检测高度(实际上没有使用)
+nScanRings : 32  # 雷达线数：32线或者64线
+angularRes : 0.2 # 激光雷达水平角分辨率
+
+# # 提取高度特征点
+heightMaxThres : 0.5 # 高度差最大值，单位
+heightMinThres : 0.025 # 高度差最小值
+heightSigmaThre : 0.01 # 高度方差最小值
+heightRegion : 5 # 点云范围(高度)
+
+
+# 提取平滑特征点
+curvatureThres : 0.002 # 曲率阈值
+curvatureRegion : 5 # 点云范围(平滑度)
+
+useAngleHorizon : false # 等边三角形法测试
+testThres : 0.1 # 尽量调大,好像随距离变化而变化
+testRegion : 5
+
+useHorizon : false
+distanceHorizonThres : 2 # 水平面的距离阈值
+useVerticle : false
+distanceVerticalThres : 1 # 垂直面的距离阈值
+
+
+
+rmseThres: 0.1
+meanThres: 1.5
+
+
+gridNum: 100
+gridRes: 0.5
+
+
+# RANSAC
+curveFitThres: 0.15
+useCurveRansac: true
+
+#======================== 图像处理 ==========================#
+
+GaussianBlur_heigt : 7
+GaussianBlur_width : 7
+canny_low : 500
+canny_up : 5
+threshold_thresh : 150
+threshold_maxVal : 255
+
+
+
+C_T_L : [0.128727364009994, -0.991432292561512,    0.0221647247053118, 0.0702317241027423,
+        0.100636453414645,    -0.00917520766347597, -0.994880957606715, -0.220931144786802,
+        0.986560474577793,    0.130298982461706,    0.0985931294273779,   -0.0288947295460282]
